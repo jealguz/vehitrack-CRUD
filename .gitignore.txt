@@ -1,0 +1,10 @@
+/target/
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.mtl.strategy
+.netbeans_update_resources
+*.class
+*.jar

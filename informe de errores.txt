@@ -1,0 +1,36 @@
+
+INFORME DE NOVEDADES Y RESOLUCIÓN DE CONFLICTOS TÉCNICOS
+Proyecto: VehiTrack
+
+
+Durante el desarrollo y la puesta en marcha del ciclo CRUD integral para la evidencia GA7-220501096-AA2-EV01, se presentaron una serie de desafíos técnicos relacionados con el entorno de ejecución (Maven/JDK 25) y la base de datos (MySQL 8). A continuación, se detallan los inconvenientes encontrados y las acciones correctivas aplicadas:
+
+1. Inconsistencia en la Definición de la Clase Principal
+Situación: El proyecto no ejecutaba inicialmente, reportando que la clase main no era localizada por el motor de Maven.
+
+Causa: Error en la ruta calificada del paquete dentro del archivo de configuración pom.xml.
+
+Solución: Se reconfiguró la propiedad <exec.mainClass> asegurando la ruta exacta: com.mycompany.vehitrack.principal.main.
+
+2. Ausencia de Librerías de Conexión (Driver JDBC)
+Situación: Al intentar la conexión con MySQL, el sistema arrojaba la excepción No suitable driver found.
+
+Causa: El archivo de configuración de Maven carecía de la sección de dependencias necesaria para el conector de Java.
+
+Solución: Se integró la dependencia mysql-connector-j en su versión 8.3.0 y se implementó la carga dinámica de la clase mediante Class.forName en la capa de conexión para asegurar la compatibilidad con el JDK instalado.
+
+3. Conflicto de Integridad Referencial (Foreign Key)
+Situación: Durante la fase de pruebas de borrado (Delete), el sistema impedía la eliminación del usuario, arrojando un error de violación de llave foránea.
+
+Causa: Se intentó eliminar el registro del "Usuario" (tabla padre) mientras aún existía un "Vehículo" (tabla hija) vinculado a su ID, lo cual está restringido por las reglas de integridad de la base de datos.
+
+Solución: Se rediseñó la lógica del método main para realizar un borrado ordenado: primero se elimina el registro en la tabla vehiculo y posteriormente se procede con el registro en la tabla usuario.
+
+4. Manejo de Excepciones por Entradas Duplicadas
+Situación: Errores de tipo Duplicate entry al intentar registrar el mismo email o placa en pruebas repetitivas.
+
+Causa: Restricciones de unicidad en las columnas de la base de datos.
+
+Solución: Se implementó un flujo de limpieza automática al finalizar cada ciclo de prueba. Esto garantiza que el entorno quede listo para una nueva ejecución limpia, facilitando la verificación de la funcionalidad sin necesidad de limpieza manual en el Workbench
+
+La resolución de estos conflictos permitió consolidar un sistema estable que cumple con los requerimientos de la guía, demostrando un manejo de errores en tiempo de ejecución y una correcta gestión de la persistencia de datos relacionales
